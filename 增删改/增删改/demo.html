@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #myTab td {
+            text-align: center;
+        }
+
+        .import {
+            display: none;
+        }
+        .home{
+            width: 500px;
+        }
+       .title{
+           position: relative;
+           background-color: grey;
+       }
+       .title>button{
+           position: absolute;
+           top: 5px;
+           right: 10px;
+           border-radius: 50%;
+           border: none;
+       }
+       .title>h2{
+           color: white;
+       }
+       #content{
+           display: none;
+       }
+       #btn1{
+           cursor: pointer;
+       }
+    </style>
+</head>
+<body>
+    <div class="home">
+        <div class="show">
+            <div class="title">
+                <h2>人员信息表(请点击“+”号)</h2>
+                <button id="btn1">+</button>
+            </div>
+            <div id="content">
+                <table id="myTab" width="800" border="1">
+                    <tr>
+                        <th>姓名</th>
+                        <th>年龄</th>
+                        <th>职业</th>
+                        <th>手机号</th>
+                        <th>邮箱</th>
+                        <th>操作</th>
+                        
+                    </tr>
+                    <tr>
+                        <td>张三</td>
+                        <td>30</td>
+                        <td>数据分析师</td>
+                        <td>1891211212</td>
+                        <td>114@163.com</td>
+                        <td>
+                            <a href="#" onclick="del(this)">x</a>
+                            <a href="#" onclick="modify(this)">✍</a>
+                        </td>
+                    </tr>
+                </table>
+                <p><button id="add">添加</button></p>
+            </div>
+            
+    
+        </div>
+        <hr>
+        <div class="import">
+            <h2></h2>
+            <p>姓名：<input type="text" id="name"></p>
+            <p>年龄：<input type="text" id="age"></p>
+            <p>职业：<input type="text" id="work"></p>
+            <p>手机号：<input type="text" id="tel"></p>
+            <p>邮箱: <input type="text" id="email"></p>
+            <p><button id="btn">提交</button><button id="b">取消</button></p>
+        </div>
+    </div>
+</body>
+<script src="../js/jquery-3.4.1.min.js"></script>
+<script>
+    // 点击+号显示
+    $('#btn1').click(function(){
+        $('#content').css('display','block')
+    })
+
+    // 取消
+    $("#b").click(function () {
+        $(".import").css("display", "none");
+    })
+
+     // 点击添加
+     $("#add").click(function () {
+        $(".import").css("display", "block").find("h2").html("新建人员信息")
+    })
+    // 点击提交
+    var modifyIndex
+    $("#btn").click(function () {
+        // 验证
+        if ($(".import h2").html() == "新建人员信息") { 
+            var $trObj = "<tr><td>" + $("#name").val() + "</td>";
+            $trObj += "<td>" + $("#age").val() + "</td>";
+            $trObj += "<td>" + $("#work").val() + "</td>";
+            $trObj += "<td>" + $("#tel").val() + "</td>";
+            $trObj += "<td>" + $("#email").val() + "</td>";
+            $trObj += "<td><a href='#' onclick='del(this)'>x</a> <a href='#' onclick='modify(this)'>✍</a></td></tr>"
+            $("tbody").append($trObj);
+        }else {
+            $("tr").eq(modifyIndex).children().first("td").html($("#name").val()).next().html($("#age").val()).next().html($("#work").val()).next().html($("#tel").val()).next().html($("#email").val());
+            $("input[type=radio]").each(function (i, e) {
+                if ($(e).prop("checked")) {
+                    $("tr").eq(modifyIndex).children().first("td").next().html($(e).val());
+                }
+            })
+        }
+        $("#name").val("")
+        $("#age").val("");
+        $("#work").val("");
+        $("#tel").val("");
+        $("#email").val("");
+        $(".import").css("display", "none");
+    })
+   
+
+    function del(obj) {
+        $(obj).parents("tr").remove();
+    }
+    function modify(obj) {
+        $(".import").css("display", "block").find("h2").html("人员详细信息")
+        $("#name").val($(obj).parent().prev().prev().prev().prev().prev().html());
+        $("#age").val($(obj).parent().prev().prev().prev().prev().html());
+        $("#work").val($(obj).parent().prev().prev().prev().html());
+        $("#tel").val($(obj).parent().prev().prev().html());
+        $("#email").val($(obj).parent().prev().html());
+        $("input[type=radio]").each(function (i, e) {
+            if ($(e).val() == $(obj).parent().prev().prev().html()) {
+                $(e).prop("checked", true);
+            }
+        })
+        modifyIndex=$(obj).parents("tr").index();
+    }
+
+</script>
+</html>

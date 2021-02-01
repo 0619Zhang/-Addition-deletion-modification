@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 20px;
+        }
+
+        .show {
+            /* border: 1px solid red; */
+            width: 800px;
+            text-align: center;
+        }
+
+        #add {
+            font-size: 20px;
+            display: block;
+        }
+
+        .import {
+            display: none;
+        }
+
+        .fkyz>h2 {
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="home">
+        <div class="show">
+            <table id="myTab" width='800' border="1">
+                <tr>
+                    <th>姓名</th>
+                    <th>年龄</th>
+                    <th>工作</th>
+                    <th>电话</th>
+                    <th>邮箱</th>
+                    <th>操作</th>
+                </tr>
+                <tr>
+                    <td>张伟丰</td>
+                    <td>22</td>
+                    <td>前端开发</td>
+                    <td>18917223359</td>
+                    <td>1140308217@qq.com</td>
+                    <td>
+                        <a href="#" onclick="del(this)">×</a>
+                        <a href="#" onclick="gai(this)">✍</a>
+                    </td>
+                </tr>
+            </table>
+            <p><button id="add">添加</button></p>
+        </div>
+        <hr>
+        <br>
+        <div class="fkyz">
+            <h2>内容不能为空 或 信息输入有误！</h2>
+        </div>
+        <div class="import">
+            <h2>新建人员信息</h2>
+            <p>姓名:<input type="text" id="name" class="fk1"></p>
+            <p>年龄:<input type="text" id="age" class="fk2"></p>
+            <p>工作:<input type="text" id="work" class="fk3"></p>
+            <p>电话:<input type="text" id="tel" class="fk4"></p>
+            <p>邮箱:<input type="text" id="email" class="fk5"></p>
+            <p><button id="btn">提交</button>
+                <button id="btn2">取消</button>
+            </p>
+        </div>
+    </div>
+</body>
+<script src="../js/jquery-3.4.1.min.js"></script>
+<script>
+    $('#add').click(function () {
+        $('.import').toggle('slow').find('h2').html('新建人员信息');
+    })
+
+
+    var gaiIndex
+    var reg2 = /^(([0-9]|[1-9][1-9]|1[0-7][0-9])(\\.[0-9]+)?|180)$/;    //年龄验证
+    var reg4= /^[1][3,4,5,7,8][0-9]{9}$/;   //手机号验证
+    var reg5 = /^(([^()[\]\\.,;:\s@\"]+(\.[^()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; //邮箱验证
+    //点击提交
+    $('#btn').click(function () {
+        //验证
+        if ($('.import h2').html() == '新建人员信息') {
+            //非空验证
+            if ($('.fk1').val() == '' || $('.fk2').val() == '' || $('.fk3').val() == '' || $('.fk4').val() == '' || $('.fk5').val() == '' || !reg5.test($('.fk5').val()) || !reg4.test($('.fk4').val()) || !reg2.test($('.fk2').val()) ) {
+                $('.fkyz h2').css('display', 'block');
+                return false;
+            } else {
+                var $trObj = "<tr><td>" + $('#name').val() + "</td>";
+                $trObj += "<td>" + $('#age').val() + "</td>";
+                $trObj += "<td>" + $('#work').val() + "</td>";
+                $trObj += "<td>" + $('#tel').val() + "</td>";
+                $trObj += "<td>" + $('#email').val() + "</td>";
+                $trObj += "<td><a href='#' onclick='del(this)'>×</a><a href='#' onclick='gai(this)'>✍</a></td></tr>";
+                $('tbody').append($trObj);
+                $('.fkyz h2').css('display', 'none');
+            }
+        } else {
+            $("tr").eq(gaiIndex).children().first('td').html($('#name').val()).next().html($('#age').val()).next().html($('#work').val()).next().html($('#tel').val()).next().html($('#email').val());
+        }
+
+        //清空添加表
+        $('#name').val('');
+        $('#age').val('');
+        $('#work').val('');
+        $('#tel').val('');
+        $('#email').val('');
+        $('.import').toggle('slow');
+    })
+
+    //点击取消
+    $('#btn2').click(function () {
+        $('.import').toggle('slow');
+        $('.fkyz h2').css('display', 'none');
+    })
+
+    //点击删除
+    function del(obj){
+        $(obj).parents("tr").remove();
+    }
+
+    //点击修改
+    function gai(obj){
+        $('.import').css('display','block').find('h2').html('人员详细信息');
+        $('#name').val($(obj).parent().prev().prev().prev().prev().prev().html());
+        $('#age').val($(obj).parent().prev().prev().prev().prev().html());
+        $('#work').val($(obj).parent().prev().prev().prev().html());
+        $('#tel').val($(obj).parent().prev().prev().html());
+        $('#email').val($(obj).parent().prev().html());
+
+        gaiIndex=$(obj).parents('tr').index();
+    }
+</script>
+
+</html>
